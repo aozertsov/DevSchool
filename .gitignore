@@ -17,6 +17,9 @@
 *.mdf
 *.ldf
 
+#NuGet packages
+*.nupkg
+
 #Additional packages
 */packages/
 
