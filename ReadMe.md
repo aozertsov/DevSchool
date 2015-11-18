@@ -1,7 +1,9 @@
 This project - application for learnng ASP architecture.
 Tasks:
-1. Create database
-2. Mapping database
-3. Write database logic
-4. Write server API
-5. Write server frondend
+<ol>
+	<li>Create database</li>
+	<li>Mapping database</li>
+	<li>Write database logic</li>
+	<li>Write server API</li>
+	<li>Write server frondend</li>
+</ol>
