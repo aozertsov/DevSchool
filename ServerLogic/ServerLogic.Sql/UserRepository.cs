@@ -2,7 +2,7 @@
 using ServerLogic.Map;
 using ServerLogic.Repositories;
 using System.Data.SqlClient;
-using ServerLogic.Sql.Properties;
+using System.Configuration;
 
 namespace ServerLogic.Sql {
     public class UserRepository : IUsersRepository {
@@ -10,7 +10,7 @@ namespace ServerLogic.Sql {
         public void ChangeNumber(Users user, string number) {
             if(user == null)
                 throw new ArgumentNullException();
-            using(var connection = new SqlConnection(new Settings().connectString)) {
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using(var command = connection.CreateCommand()) {
                     command.CommandText = "insert into [dbo].[Users] (contactNumber) values (@contactNumber) where idUser = @id";
@@ -20,10 +20,11 @@ namespace ServerLogic.Sql {
                 }
             }
         }
+
         public void GetUser(Users user) {
             if(user == null)
                 throw new ArgumentNullException();
-            using(var connection = new SqlConnection(new Settings().connectString)) {
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using(var command = connection.CreateCommand()) {
                     command.CommandText = "select idUser, firstName, lastName, contactNumber, email from [dbo].[Users] where idUser = @id";
@@ -36,7 +37,7 @@ namespace ServerLogic.Sql {
         public void Delete(Users user) {
             if(user == null)
                 throw new ArgumentNullException();
-            using(var connection = new SqlConnection(new Settings().connectString)) {
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 //TODO parse email and contactNumber
                 //TODO check for existing
@@ -52,10 +53,11 @@ namespace ServerLogic.Sql {
             }
         }
 
-        public void Greate(Users user) {
+        public void Create(Users user) {
             if(user == null)
                 throw new ArgumentNullException();
-            using (var connection = new SqlConnection(new Settings().connectString)) {
+            var c = ConfigurationManager.ConnectionStrings;
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 //TODO parse email and contactNumber
                 //TODO check for unique

@@ -16,7 +16,7 @@ namespace ServerLogic.API.Controllers
         [HttpPost]
         public void Create(Users user) {
             user.idUser = Guid.NewGuid();
-            ur.Greate(user);
+            ur.Create(user);
         }
 
         [HttpPost]

@@ -16,7 +16,7 @@ namespace ServerLogic.Tests {
                 lastName = "sdf",
                 contactNumber = "sdf"
             };
-            userRepository.Greate(user);
+            userRepository.Create(user);
         }
     }
 }

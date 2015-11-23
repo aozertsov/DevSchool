@@ -7,14 +7,14 @@ using ServerLogic.Sql;
 using ServerLogic.Map;
 using ServerLogic.Repositories;
 using System.Data.SqlClient;
-using ServerLogic.Sql.Properties;
+using System.Configuration;
 
 namespace ServerLogic.Sql {
     public class PlaceRepository : IPlaceRepository {
         public void Add(Place place) {
             if (place == null)
                 throw new ArgumentNullException();
-            using (var connection = new SqlConnection(new Settings().connectString)) {
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using (var command = connection.CreateCommand()) {
                     command.CommandText = "insert into [dbo].[Place] (country, city, street, house) values (@country, @city, @street, @house)";

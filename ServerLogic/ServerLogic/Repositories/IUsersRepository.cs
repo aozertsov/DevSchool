@@ -7,7 +7,7 @@ using ServerLogic.Map;
 
 namespace ServerLogic.Repositories {
     public interface IUsersRepository {
-        void Greate(Users user);
+        void Create(Users user);
         void GetUser(Users user);
         void Delete(Users user);
         void ChangeNumber(Users user, string number);

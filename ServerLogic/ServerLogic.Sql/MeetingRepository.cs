@@ -2,20 +2,17 @@
 using ServerLogic.Repositories;
 using ServerLogic.Map;
 using System.Data.SqlClient;
-using ServerLogic.Sql.Properties;
+using System.Configuration;
 
 namespace ServerLogic.Sql
 {
-    public class A {
-    }
-    public class B : A {
-    }
     public class MeetingRepository : IMeetingRepository {
+
         public void Create(Meeting meeting) {
             if(meeting == null)
                 throw new ArgumentNullException();
             //TODO check existing place
-            using (var connection = new SqlConnection(new Settings().connectString)) {
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using (SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "select * from [dbo].[Meeting] where place = @place";
@@ -27,7 +24,7 @@ namespace ServerLogic.Sql
                     }
                 }
             }
-            using(var connection = new SqlConnection(new Settings().connectString)) {
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using(SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "insert into [dbo].[Meeting] (idMeet, place, dateTime) values (@idMeet, @place, @dateTime)";
@@ -43,7 +40,7 @@ namespace ServerLogic.Sql
             if(date == null)
                 throw new ArgumentNullException();
             //TODO check existing place
-            using(var connection = new SqlConnection(new Settings().connectString)) {
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using(SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "select * from [dbo].[Meeting] where place = @place";
@@ -55,7 +52,7 @@ namespace ServerLogic.Sql
                     }
                 }
             }
-            using(SqlConnection connection = new SqlConnection(new Settings().connectString)) {
+            using(SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using(SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "update [dbo].[Meeting] set dateTime = @dateTime where idMeet = @idMeet, place = @place";

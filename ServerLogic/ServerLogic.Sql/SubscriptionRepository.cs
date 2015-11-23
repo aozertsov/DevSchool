@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ServerLogic.Repositories;
 using System.Data.SqlClient;
-using ServerLogic.Sql.Properties;
+using System.Configuration;
 
 namespace ServerLogic.Sql {
     public class SubscriptionRepository : ISubscriptionRepository {
@@ -13,7 +13,7 @@ namespace ServerLogic.Sql {
             if(idUser == null || idMeet == 0)
                 throw new ArgumentNullException();
             //TODO check existing user and meeting
-            using(var connection = new SqlConnection(new Settings().connectString)) {
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using(SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "select * from [dbo].[Users] where idUser = @idUser";
@@ -25,7 +25,7 @@ namespace ServerLogic.Sql {
                     }
                 }
             }
-            using(var connection = new SqlConnection(new Settings().connectString)) {
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using(SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "select * from [dbo].[Meeting] where idMeet = @idMeet";
@@ -37,7 +37,7 @@ namespace ServerLogic.Sql {
                     }
                 }
             }
-            using (SqlConnection connection = new SqlConnection(new Settings().connectString)) {
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using (SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "insert into [dbo].[Subscription] (idMeet, idUser) values (@idMeet, @idUser)";
@@ -51,7 +51,7 @@ namespace ServerLogic.Sql {
         public void UnSubscribe(Guid idUser, int idMeet) {
             if (idUser != null || idMeet != 0 ){
                 //TODO check existing user and meeting
-                using(var connection = new SqlConnection(new Settings().connectString)) {
+                using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                     connection.Open();
                     using(SqlCommand command = connection.CreateCommand()) {
                         command.CommandText = "select * from [dbo].[Users] where idUser = @idUser";
@@ -63,7 +63,7 @@ namespace ServerLogic.Sql {
                         }
                     }
                 }
-                using(var connection = new SqlConnection(new Settings().connectString)) {
+                using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                     connection.Open();
                     using(SqlCommand command = connection.CreateCommand()) {
                         command.CommandText = "select * from [dbo].[Meeting] where idMeet = @idMeet";
@@ -75,7 +75,7 @@ namespace ServerLogic.Sql {
                         }
                     }
                 }
-                using(SqlConnection connection = new SqlConnection(new Settings().connectString)) {
+                using(SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                     connection.Open();
                     using (SqlCommand command = connection.CreateCommand()) {
                         command.CommandText = "delete from [dbo].[Subscription] (idMeet, idUser) where idMeet = @idMeet, idUser = @idUser";
