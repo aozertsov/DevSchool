@@ -11,11 +11,11 @@ namespace ServerLogic.API.Controllers
 {
     public class MeetingController : ApiController
     {
-        private MeetingRepository mr = new MeetingRepository();
+       // private MeetingRepository mr = new MeetingRepository();
 
         [HttpPost]
         public void Create(Meeting meet) {
-            mr.Create(meet);
+           // mr.Create(meet);
         }
     }
 }

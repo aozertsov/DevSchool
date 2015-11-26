@@ -10,16 +10,16 @@ namespace ServerLogic.API.Controllers
 {
     public class SubscriptionController : ApiController
     {
-        SubscriptionRepository sr = new SubscriptionRepository();
+        //SubscriptionRepository sr = new SubscriptionRepository();
 
         [HttpPut]
         public void Subscribe(Guid idUser, int idMeet) {
-            sr.Subscribe(idUser, idMeet);
+          //  sr.Subscribe(idUser, idMeet);
         }
 
         [HttpPut]
         public void UnSubscribe(Guid idUser, int idMeet) {
-            sr.UnSubscribe(idUser, idMeet);
+            //sr.UnSubscribe(idUser, idMeet);
         }
     }
 }

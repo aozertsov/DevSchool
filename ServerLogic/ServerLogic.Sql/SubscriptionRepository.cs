@@ -6,36 +6,45 @@ using System.Threading.Tasks;
 using ServerLogic.Repositories;
 using System.Data.SqlClient;
 using System.Configuration;
+using ServerLogic.Map;
 
 namespace ServerLogic.Sql {
     public class SubscriptionRepository : ISubscriptionRepository {
+        protected IUsersRepository userReposotory;
+        protected IMeetingRepository meetingRepository;
+
+
+        public SubscriptionRepository(IMeetingRepository meetRep, IUsersRepository usrRep) {
+            userReposotory = usrRep;
+            meetingRepository = meetRep;
+        }
+
+        public bool Exist(Subscription sub) {
+            if(sub == null)
+                throw new ArgumentNullException();
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using(var command = connection.CreateCommand()) {
+                    command.CommandText = "select idUser from [dbo].[Subscription] where idUser = @idUser and idMeet = @idMeet";
+                    command.Parameters.AddWithValue("@idUser", sub.idUser);
+                    command.Parameters.AddWithValue("@idMeet", sub.idPlace);
+                    using(SqlDataReader reader = command.ExecuteReader()) {
+                        reader.Read();
+                        return reader.HasRows;
+                    }
+                }
+            }
+        }
+
         public void Subscribe(Guid idUser, int idMeet) {
             if(idUser == null || idMeet == 0)
                 throw new ArgumentNullException();
             //TODO check existing user and meeting
-            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
-                connection.Open();
-                using(SqlCommand command = connection.CreateCommand()) {
-                    command.CommandText = "select * from [dbo].[Users] where idUser = @idUser";
-                    command.Parameters.AddWithValue("@idUser", idUser);
-                    using(var reader = command.ExecuteReader()) {
-                        reader.Read();
-                        if(!reader.HasRows)
-                            throw new ArgumentException("this user doesn't exist");
-                    }
-                }
+            if (!(userReposotory.Exist(idUser) )) {
+                throw new ArgumentException("This user not exist!");
             }
-            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
-                connection.Open();
-                using(SqlCommand command = connection.CreateCommand()) {
-                    command.CommandText = "select * from [dbo].[Meeting] where idMeet = @idMeet";
-                    command.Parameters.AddWithValue("@idMeet", idMeet);
-                    using(var reader = command.ExecuteReader()) {
-                        reader.Read();
-                        if(!reader.HasRows)
-                            throw new ArgumentException("this meet doesn't exist");
-                    }
-                }
+            if (!(meetingRepository.Exist(idMeet) )) {
+                throw new ArgumentException("This meeting not exist!");
             }
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
@@ -50,35 +59,16 @@ namespace ServerLogic.Sql {
 
         public void UnSubscribe(Guid idUser, int idMeet) {
             if (idUser != null || idMeet != 0 ){
-                //TODO check existing user and meeting
-                using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
-                    connection.Open();
-                    using(SqlCommand command = connection.CreateCommand()) {
-                        command.CommandText = "select * from [dbo].[Users] where idUser = @idUser";
-                        command.Parameters.AddWithValue("@idUser", idUser);
-                        using(var reader = command.ExecuteReader()) {
-                            reader.Read();
-                            if(!reader.HasRows)
-                                throw new ArgumentException("this user doesn't exist");
-                        }
-                    }
+                if (!(userReposotory.Exist(idUser) )) {
+                    throw new ArgumentNullException("This user not exists!");
                 }
-                using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
-                    connection.Open();
-                    using(SqlCommand command = connection.CreateCommand()) {
-                        command.CommandText = "select * from [dbo].[Meeting] where idMeet = @idMeet";
-                        command.Parameters.AddWithValue("@idMeet", idMeet);
-                        using(var reader = command.ExecuteReader()) {
-                            reader.Read();
-                            if(!reader.HasRows)
-                                throw new ArgumentException("this meet doesn't exist");
-                        }
-                    }
+                if (!(meetingRepository.Exist(idMeet) )) {
+                    throw new ArgumentNullException("This meeting not exists!");
                 }
                 using(SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                     connection.Open();
                     using (SqlCommand command = connection.CreateCommand()) {
-                        command.CommandText = "delete from [dbo].[Subscription] (idMeet, idUser) where idMeet = @idMeet, idUser = @idUser";
+                        command.CommandText = "delete from [dbo].[Subscription] where idMeet = @idMeet and idUser = @idUser";
                         command.Parameters.AddWithValue("@idMeet", idMeet);
                         command.Parameters.AddWithValue("@idUser", idUser);
                         command.ExecuteNonQuery();

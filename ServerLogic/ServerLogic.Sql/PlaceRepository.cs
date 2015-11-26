@@ -11,6 +11,7 @@ using System.Configuration;
 
 namespace ServerLogic.Sql {
     public class PlaceRepository : IPlaceRepository {
+
         public void Add(Place place) {
             if (place == null)
                 throw new ArgumentNullException();
@@ -26,5 +27,20 @@ namespace ServerLogic.Sql {
                 }
             }
         }
+
+        public bool Exist(int idPlace) {
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using(var command = connection.CreateCommand()) {
+                    command.CommandText = "select house from [dbo].[Place] where idPlace = @idPlace";
+                    command.Parameters.AddWithValue("@idPlace", idPlace);
+                    using(var reader = command.ExecuteReader()) {
+                        reader.Read();
+                        return reader.HasRows;
+                    }
+                }
+            }
+        }
+
     }
 }

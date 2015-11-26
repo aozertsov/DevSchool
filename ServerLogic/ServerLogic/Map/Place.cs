@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ServerLogic.Map {
+    [Serializable]
     public class Place {
         public int idPlace                  { get; set; }
         public string country               { get; set; }

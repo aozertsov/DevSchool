@@ -9,14 +9,15 @@ namespace ServerLogic.Tests {
         [TestMethod]
         public void AddPlace() {
             PlaceRepository rep = new PlaceRepository();
-            Place place = new Place() {
-                idPlace = 1,
-                country = "Russia",
-                city = "Ulyanovsk",
-                house = 23,
-                street = "Gagarina"
-            };
+            Place place = DataGenerator.GeneratePlace();
             rep.Add(place);
+        }
+
+        [TestMethod]
+        public void ExistPlace() {
+            PlaceRepository rep = new PlaceRepository();
+            Place place = DataGenerator.GeneratePlace();
+            rep.Exist(place.idPlace);
         }
     }
 }
