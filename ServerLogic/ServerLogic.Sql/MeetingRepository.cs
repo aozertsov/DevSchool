@@ -34,9 +34,10 @@ namespace ServerLogic.Sql
 
         public void Create(Meeting meeting) {
             logger.Log(LogLevel.Info, $"Start creating mmeting with id = {meeting.idMeet}");
-            if(meeting == null)
+            if(meeting == null) {
                 logger.Log(LogLevel.Error, $"Can't create meeting, because it is null");
                 throw new ArgumentNullException();
+            }
             if (!(placeRep.Exist(meeting.place) )) {
                 logger.Log(LogLevel.Error, $"Can't create meeting, because place = {meeting.place} not exist!");
                 throw new ArgumentException("This place not exist!");
@@ -56,9 +57,10 @@ namespace ServerLogic.Sql
 
         public void ChangeDateTime(Meeting meeting, DateTime date) {
             logger.Log(LogLevel.Info, $"Start change date to meeting with id = {meeting.idMeet} to date = {date}");
-            if(date == null)
+            if(date == null) {
                 logger.Log(LogLevel.Error, $"Can't change date to meeting with id = {meeting.idMeet} because date is null");
                 throw new ArgumentNullException();
+            }
             if(!(placeRep.Exist(meeting.place) )) {
                 logger.Log(LogLevel.Error, $"Can't change date to meeting with id = {meeting.idMeet} because place = {meeting.place} not exist");
                 throw new ArgumentException("This place not exist!");
