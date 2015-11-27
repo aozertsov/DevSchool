@@ -8,13 +8,22 @@ using ServerLogic.Map;
 using ServerLogic.Repositories;
 using System.Data.SqlClient;
 using System.Configuration;
+using NLog;
 
 namespace ServerLogic.Sql {
     public class PlaceRepository : IPlaceRepository {
+        Logger logger;
+
+        public PlaceRepository() {
+            logger = LogManager.GetCurrentClassLogger();
+        }
 
         public void Add(Place place) {
-            if (place == null)
+            logger.Log(LogLevel.Info, $"Start adding new place with id = {place.idPlace}");
+            if(place == null) { 
+                logger.Log(LogLevel.Error, $"Adding place is null");
                 throw new ArgumentNullException();
+            }
             using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using (var command = connection.CreateCommand()) {
@@ -26,9 +35,11 @@ namespace ServerLogic.Sql {
                     command.ExecuteNonQuery();
                 }
             }
+            logger.Log(LogLevel.Info, $"End adding new place with id = {place.idPlace}");
         }
 
         public bool Exist(int idPlace) {
+            logger.Log(LogLevel.Info, $"Start checking place with id = {idPlace}");
             using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using(var command = connection.CreateCommand()) {
@@ -36,6 +47,7 @@ namespace ServerLogic.Sql {
                     command.Parameters.AddWithValue("@idPlace", idPlace);
                     using(var reader = command.ExecuteReader()) {
                         reader.Read();
+                        logger.Log(LogLevel.Info, $"End checking place with id = {idPlace}");
                         return reader.HasRows;
                     }
                 }
