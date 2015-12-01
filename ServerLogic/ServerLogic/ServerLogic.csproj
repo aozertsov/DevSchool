@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Map\Place.cs" />
     <Compile Include="Map\Subscription.cs" />
     <Compile Include="Map\Users.cs" />
