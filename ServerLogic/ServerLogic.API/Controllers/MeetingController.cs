@@ -20,7 +20,6 @@ namespace ServerLogic.API.Controllers
 
         [HttpGet]
         //[Route("api/Meeting/Create")]
-        
         public int Get(int i) {
             return i;
         }

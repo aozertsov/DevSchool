@@ -14,7 +14,6 @@ namespace ServerLogic.Tests {
                 stream.Seek(0, SeekOrigin.Begin);
                 return (T) formatter.Deserialize(stream);
             }
-
         }
     }
 
