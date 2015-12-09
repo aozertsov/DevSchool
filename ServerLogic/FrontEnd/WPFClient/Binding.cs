@@ -24,7 +24,12 @@ namespace WPFClient {
         private Visibility _flag = Visibility.Hidden;
         private Visibility _flagSettings = Visibility.Hidden;
         private List<Place> _meetings = new List<Place>();
-        
+
+        public Guid UserGuid {
+            get { return _userGuid; }
+            set { _userGuid = value; }
+        }
+
         public UserControl Control {
             get {
                 return _control;
@@ -97,6 +102,10 @@ namespace WPFClient {
             get {
                 return new DelegateCommand(() => {
                     if (_userGuid == Guid.Empty) {
+                        if (Flag != Visibility.Visible)
+                            Hello = "Please, enter";
+                    }
+                    else {
                         Control = new SettingControl();
                         ListBox a = Control?.Content as ListBox;
                         a?.Items.Add(new Users {
@@ -121,7 +130,7 @@ namespace WPFClient {
                         ListBox a = Control?.Content as ListBox;
                         //TODO add via method
                         a?.Items.Add(new Place { city = "city" });
-                        a?.Items.Add(new Place { city = "ГОрод" });
+                        a?.Items.Add(new Place { city = "Город" });
                         FlagSetting = Visibility.Visible;
                     }
                 });
@@ -132,11 +141,11 @@ namespace WPFClient {
             get {
                 if (_userGuid == Guid.Empty)
                     return new DelegateCommand(() => {
-                        Hello = "Enterrrrrr";
+                        Hello = "enter your datas";
                         Flag = Visibility.Visible;
                     });
                 else {
-                    return new DelegateCommand(() => Hello = "Тут нужно будет отправить запрос");
+                    return new DelegateCommand(() => Hello = $"Hello {Email}");
                 }
             }
         }
@@ -153,6 +162,10 @@ namespace WPFClient {
                         };
                         var createUser = new UserRepository().CreateUser(user);
                         createUser.Wait();
+                        UserGuid = createUser.Result;
+                        Hello = $"Hello {Email}";
+                        Flag = Visibility.Hidden;
+                        OnPropertyChanged();
                     }
                 });
             }

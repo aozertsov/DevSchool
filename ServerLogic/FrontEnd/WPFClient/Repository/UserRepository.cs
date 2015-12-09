@@ -17,14 +17,14 @@ namespace WPFClient.Repository {
             }
         }
 
-        public async Task<Users> CreateUser(Users user) {
+        public async Task<Guid> CreateUser(Users user) {
             string usr = JsonConvert.SerializeObject(user);
             using(var client = new HttpClient {
                 BaseAddress = new Uri(@"http://localhost:57239/")
             }) {
                 var response = client.PostAsJsonAsync($"api/users/create/", user).Result;
                 string a = JsonConvert.SerializeObject(user);
-                return await response.Content.ReadAsAsync<Users>();
+                return await response.Content.ReadAsAsync<Guid>();
             }
         }
     }
