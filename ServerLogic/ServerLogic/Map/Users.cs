@@ -4,7 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ServerLogic.Map {
-    [Serializable]
     public class Users {
         public Guid idUser                             { get; set; }
         public string email                            { get; set; }
