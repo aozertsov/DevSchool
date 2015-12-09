@@ -47,7 +47,7 @@ namespace ServerLogic.Sql
                 using(SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "insert into [dbo].[Meeting] (place, dateMeet) values (@place, @dateMeet)";
                     //command.Parameters.AddWithValue("@idMeet", meeting.idMeet);
-                    command.Parameters.AddWithValue("@place", meeting.place);
+                    command.Parameters.AddWithValue("@place", meeting.idMeet);
                     command.Parameters.AddWithValue("@dateMeet", meeting.dateMeet);
                     command.ExecuteNonQuery();
                     logger.Log(LogLevel.Info, $"End creating mmeting with id = {meeting.idMeet}");

@@ -28,17 +28,18 @@ namespace ServerLogic.Tests {
         }
 
         [TestMethod]
-        public void ChengeNumber() {
+        public void ChangeNumber() {
             var userRepository = new UserRepository();
             var user = DataGenerator.GenerateUser();
             userRepository.ChangeNumber(user, "987");
         }
-
-//        [TestMethod]
-//        public void DeleteUser() {
-//            var userRepository = new UserRepository();
-//            var user = DataGenerator.GenerateUser();
-//            userRepository.Delete(user);
-//        }
+        
+        [TestMethod]
+        [ClassCleanup]
+        public void DeleteUser() {
+            var userRepository = new UserRepository();
+            var user = DataGenerator.GenerateUser();
+            userRepository.Delete(user);
+        }
     }
 }
