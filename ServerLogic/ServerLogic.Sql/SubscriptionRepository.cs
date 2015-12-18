@@ -13,8 +13,7 @@ namespace ServerLogic.Sql {
         protected IUsersRepository userReposotory;
         protected IMeetingRepository meetingRepository;
         Logger logger;
-
-
+        
         public SubscriptionRepository(IMeetingRepository meetRep, IUsersRepository usrRep) {
             userReposotory = usrRep;
             meetingRepository = meetRep;

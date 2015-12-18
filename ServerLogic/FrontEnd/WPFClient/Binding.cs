@@ -14,14 +14,16 @@ namespace WPFClient {
     using WPFClient.UserControls;
 
     public class Binding : INotifyPropertyChanged {
+        public DateTime CurrentDate = new DateTime();
         private UserControl _control;
+        private UserControl _logOrCreate;
         private Guid _userGuid;
         private string _email;
         private string _firstName;
         private string _lastName;
         private string _phone;
-        private string _hello = "Enter";
-        private Visibility _flag = Visibility.Hidden;
+        private string _hello = "";
+        private Visibility _flag = Visibility.Visible;
         private Visibility _flagSettings = Visibility.Hidden;
         private List<Place> _meetings = new List<Place>();
 
@@ -36,6 +38,19 @@ namespace WPFClient {
             }
             set {
                 _control = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public UserControl LogOrCreate
+        {
+            get
+            {
+                return _logOrCreate;
+            }
+            set
+            {
+                _logOrCreate = value;
                 OnPropertyChanged();
             }
         }
@@ -91,7 +106,7 @@ namespace WPFClient {
         }
 
         public string Hello {
-            get { return _userGuid == Guid.Empty ? _hello :  $"Hello, {_firstName}"; }
+            get { return _hello; } //_userGuid == Guid.Empty ? _hello :  $"Hello, {_firstName}"; }
             set {
                 _hello = value;
                 OnPropertyChanged();
@@ -125,12 +140,16 @@ namespace WPFClient {
             get
             {
                 return new DelegateCommand(() => {
-                    if(_userGuid == Guid.Empty) {
+                    if(_userGuid != Guid.Empty) {
+                        var createUser = new MeetRepository().GetMeets(UserGuid);
+                        createUser.Wait();
+                        var w = createUser.Result;
                         Control = new MeetingControl();
                         ListBox a = Control?.Content as ListBox;
                         //TODO add via method
-                        a?.Items.Add(new Place { city = "city" });
-                        a?.Items.Add(new Place { city = "Город" });
+                        foreach (Place place in w) {
+                            a?.Items.Add(place);
+                        }
                         FlagSetting = Visibility.Visible;
                     }
                 });
@@ -150,20 +169,46 @@ namespace WPFClient {
             }
         }
 
-        public ICommand CreateOrLogin {
-            get {
+        public ICommand CreateMeet
+        {
+            get
+            {
                 return new DelegateCommand(() => {
-                    if (_email != "" && _firstName != null && _lastName != null && _phone != null) {
+                    if(_userGuid != Guid.Empty) {
+                        Control = new CreateMeetControl();
+                        ListBox a = Control?.Content as ListBox;
+                        FlagSetting = Visibility.Visible;
+                    }
+                });
+            }
+        }
+
+        public ICommand ClickLogin
+        {
+            get
+            {
+                return new DelegateCommand(() => {
+                    LogOrCreate = new LoginControl();
+                });
+            }
+        }
+
+        public ICommand Login
+        {
+            get
+            {
+                return new DelegateCommand(() => {
+                    if(!(String.IsNullOrEmpty(_email) || String.IsNullOrEmpty(_phone))) {
                         Users user = new Users {
                             email = _email,
-                            firstName = _firstName,
-                            lastName = _firstName,
                             contactNumber = _phone
                         };
-                        var createUser = new UserRepository().CreateUser(user);
-                        createUser.Wait();
-                        UserGuid = createUser.Result;
-                        Hello = $"Hello {Email}";
+                        var loginUser = new UserRepository().LoginUser(user);
+                        loginUser.Wait();
+                        UserGuid = loginUser.Result.idUser;
+                        FirstName = loginUser.Result.firstName;
+                        LastName = loginUser.Result.lastName;
+                        Hello = $"Hello, {FirstName}";
                         Flag = Visibility.Hidden;
                         OnPropertyChanged();
                     }
@@ -171,6 +216,40 @@ namespace WPFClient {
             }
         }
 
+        public ICommand ClickCreate
+        {
+            get
+            {
+                return new DelegateCommand(() => {
+                    LogOrCreate = new CreateControl();
+                    FlagSetting = Visibility.Visible;
+                });
+            }
+        }
+
+        public ICommand Create
+        {
+            get
+            {
+                return new DelegateCommand(() => {
+                    if(!String.IsNullOrEmpty(_email) && !String.IsNullOrEmpty(_phone) && !String.IsNullOrEmpty(_firstName) && !String.IsNullOrEmpty(_lastName)) {
+                        Users user = new Users {
+                            email = _email,
+                            contactNumber = _phone,
+                            firstName = _firstName,
+                            lastName = _lastName
+                        };
+                        var loginUser = new UserRepository().CreateUser(user);
+                        loginUser.Wait();
+                        UserGuid = loginUser.Result;
+                        Hello = $"Hello {Email}";
+                        Flag = Visibility.Hidden;
+                        OnPropertyChanged();
+                    }
+                });
+            }
+        }
+        
         public event PropertyChangedEventHandler PropertyChanged;
             
         [NotifyPropertyChangedInvocator]

@@ -59,6 +59,32 @@ namespace ServerLogic.Sql {
             }
         }
 
+        public Users GetUser(String email) {
+            logger.Log(LogLevel.Info, $"Start Getting user with email = {email}");
+            if(String.IsNullOrEmpty(email) || !Exist(email)) {
+                logger.Log(LogLevel.Error, $"User not exist");
+                throw new ArgumentNullException($"User not exist");
+            }
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using(var command = connection.CreateCommand()) {
+                    command.CommandText = "select idUser, firstName, lastName, email, contactNumber from [dbo].[Users] where email = @email";
+                    command.Parameters.AddWithValue("@email", email);
+                    using(SqlDataReader reader = command.ExecuteReader()) {
+                        reader.Read();
+                        logger.Log(LogLevel.Info, $"End Getting user with email = {email}");
+                        return new Users {
+                            idUser = reader.GetGuid(reader.GetOrdinal("idUser")),
+                            contactNumber = reader.GetString(reader.GetOrdinal("contactNumber")),
+                            email = reader.GetString(reader.GetOrdinal("email")),
+                            firstName = reader.GetString(reader.GetOrdinal("firstName")),
+                            lastName = reader.GetString(reader.GetOrdinal("lastName")),
+                        };
+                    }
+                }
+            }
+        }
+
         public void Delete(Users user) {
             logger.Log(LogLevel.Info, $"Start deleting user with id = {user.idUser}");
             if(user == null) {
@@ -117,6 +143,26 @@ namespace ServerLogic.Sql {
                         reader.Read();
                         logger.Log(LogLevel.Info, $"End checking user with id = {idUser}");
                         return reader.HasRows;
+                    }
+                }
+            }
+        }
+
+        public string Phone(string email) {
+            logger.Log(LogLevel.Info, $"Start checking user with email = {email}");
+            if(email == null || email == "") {
+                logger.Log(LogLevel.Error, $"id User is null");
+                throw new ArgumentNullException();
+            }
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using(var command = connection.CreateCommand()) {
+                    command.CommandText = "select idUser, firstName, lastName, contactNumber from [dbo].[Users] where email = @email";
+                    command.Parameters.AddWithValue("@email", email);
+                    using(SqlDataReader reader = command.ExecuteReader()) {
+                        reader.Read();
+                        logger.Log(LogLevel.Info, $"End checking user with email = {email}");
+                        return reader.GetString(reader.GetOrdinal("contactNumber"));
                     }
                 }
             }

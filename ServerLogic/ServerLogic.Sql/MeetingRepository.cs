@@ -7,6 +7,8 @@ using NLog;
 
 namespace ServerLogic.Sql
 {
+    using System.Collections.Generic;
+
     public class MeetingRepository : IMeetingRepository {
         private readonly IPlaceRepository placeRep;
         Logger logger;
@@ -78,5 +80,34 @@ namespace ServerLogic.Sql
             logger.Log(LogLevel.Info, $"End change date to meeting with id = {meeting.idMeet} to date = {date}");
         }
 
+        public List<Place> Get(Guid idUser) {
+            logger.Log(LogLevel.Info, $"Get meetings for user with id = {idUser}");
+            using (
+                SqlConnection connection =
+                    new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using (SqlCommand command = connection.CreateCommand()) {
+                    command.CommandText =
+                        "select Place.city, Place.country, Place.street, Place.flat, Place.house from Meeting join Subscription on Meeting.idMeet = Subscription.idMeet join Place on PLace.idPlace = Meeting.place where Subscription.idUser = @idUser";
+                    command.Parameters.AddWithValue("@idUser", idUser);
+                    var reader = command.ExecuteReader();
+                    reader.Read();
+                    if (reader.HasRows) {
+                        List<Place> result = new List<Place>();
+                        do {
+                            result.Add(new Place {
+                                country = reader.GetString(reader.GetOrdinal("country")),
+                                city = reader.GetString(reader.GetOrdinal("city")),
+                                street = reader.GetString(reader.GetOrdinal("street")),
+                                house = reader.GetInt32(reader.GetOrdinal("house"))
+                                //flat = reader.GetInt32(reader.GetOrdinal("flat")),
+                            });
+                        } while (reader.NextResult());
+                        return result;
+                    }
+                    return null;
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="WPFClient.UserControls.CreateControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFClient.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding Flag}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <Label Grid.Row="0" HorizontalAlignment="Center">email</Label>
+            <TextBox Name="email" Grid.Row="0" Text="{Binding Email}" Width="200"></TextBox>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <Label Grid.Row="1" HorizontalAlignment="Center">first name</Label>
+            <TextBox Name="firstName" Grid.Row="1" Text="{Binding FirstName}" Width="200"></TextBox>
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <Label Grid.Row="2" HorizontalAlignment="Center">last name</Label>
+            <TextBox Name="lastName" Grid.Row="2" Text="{Binding LastName}" Width="200"></TextBox>
+        </StackPanel>
+        <StackPanel Grid.Row="3">
+            <Label Grid.Row="3" HorizontalAlignment="Center">phone</Label>
+            <TextBox Name="phone" Grid.Row="3" Text="{Binding Phone}" Width="200"></TextBox>
+        </StackPanel>
+        <Button Grid.Row="4" Name ="Go" Content="Go" HorizontalAlignment="Center" Command="{Binding Create}" Width="50"></Button>
+    </Grid>
+</UserControl>

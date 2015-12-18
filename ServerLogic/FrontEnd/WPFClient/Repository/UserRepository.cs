@@ -23,8 +23,19 @@ namespace WPFClient.Repository {
                 BaseAddress = new Uri(@"http://localhost:57239/")
             }) {
                 var response = client.PostAsJsonAsync($"api/users/create/", user).Result;
-                string a = JsonConvert.SerializeObject(user);
+                //string a = JsonConvert.SerializeObject(user);
                 return await response.Content.ReadAsAsync<Guid>();
+            }
+        }
+
+        public async Task<Users> LoginUser(Users user) {
+            string usr = JsonConvert.SerializeObject(user);
+            using(var client = new HttpClient {
+                BaseAddress = new Uri(@"http://localhost:57239/")
+            }) {
+                var response = client.PostAsJsonAsync("api/users/login/", user).Result;
+                //string a = JsonConvert.SerializeObject(user);
+                return await response.Content.ReadAsAsync<Users>();
             }
         }
     }

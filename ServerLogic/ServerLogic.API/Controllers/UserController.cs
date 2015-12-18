@@ -12,13 +12,20 @@ namespace ServerLogic.API.Controllers {
         [HttpPost]
         [Route("api/users/create/")]
         public Guid Create(Users user) {
-            if(ur.Exist(user.email))
-                return ur.GetUser(user).idUser;
-            else {
+            if (!ur.Exist(user.email)) {
                 user.idUser = Guid.NewGuid();
                 ur.Create(user);
                 return user.idUser;
             }
+            throw new ArgumentException("данные не уникальны");
+        }
+
+        [HttpPost]
+        [Route("api/users/login/")]
+        public Users Login(Users user) {
+            if (ur.Exist(user.email) && ur.Phone(user.email).Replace(" ", String.Empty) == user.contactNumber)
+                return ur.GetUser(user.email);
+            throw new ArgumentException("данные не верно введены");
         }
 
         [HttpPost]
@@ -28,8 +35,10 @@ namespace ServerLogic.API.Controllers {
         }
 
         [HttpPut]
-        public void DeleteMeet(Meeting m) {
-            //ur.Delete(user);
+        [Route("api/users/delete")]
+        public void Delete(Users user) {
+            if(ur.Exist(user.idUser))
+                ur.Delete(user);
         }
     }
 }
