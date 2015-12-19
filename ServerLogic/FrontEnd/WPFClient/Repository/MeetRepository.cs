@@ -19,5 +19,17 @@ namespace WPFClient.Repository {
                 return await response.Content.ReadAsAsync<List<Place>>();
             }
         }
+
+        public async Task<int> CreateMeet(Place place, DateTime dateMeet, Guid idUser, int idPlace) {
+            using(var client = new HttpClient {
+                BaseAddress = new Uri(@"http://localhost:57239/")
+            }) {
+                var response = client.PostAsJsonAsync($"api/meeting/create/{idPlace}", dateMeet).Result;
+                return await response.Content.ReadAsAsync<int>();
+//                response = client.PostAsJsonAsync($"api/subscription/subscribe/{idMeet}", idUser).Result;
+//                return response.Content.ReadAsAsync<bool>().Result;
+            }
+        }
+
     }
 }

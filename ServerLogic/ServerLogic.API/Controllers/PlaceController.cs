@@ -14,15 +14,14 @@ namespace ServerLogic.API.Controllers
     {
         PlaceRepository pr = new PlaceRepository();
 
-        [HttpPost]
-        [Route("api/place/add/country/{place.country}/city/{place.city}/street/{place.street}/house/{place.house}")]
-        public bool AddPlace(Place place) {
-            //TODO generate idPlace
+        [HttpGet]
+        [Route("api/place/id/country/{country}/city/{city}/street/{street}/house/{house}/flat/{flat}")]
+        public int GetID(string country, string city, string street, int house, int flat) {
+            Place place = new Place {city = city, country = country, house = house, street = street, flat = flat};
             if (!pr.Exist(place.idPlace)) {
-                pr.Add(new Place());
-                return true;
+                pr.Add(place);
             }
-            return false;
+            return pr.GetId(place);
         }
     }
 }

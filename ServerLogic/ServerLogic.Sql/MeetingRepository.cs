@@ -34,6 +34,39 @@ namespace ServerLogic.Sql
             }
         }
 
+        public bool Exist(int idPlace, DateTime dateMeet) {
+            logger.Log(LogLevel.Info, $"Begin checking for existing meeting");
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using(SqlCommand command = connection.CreateCommand()) {
+                    command.CommandText = "select idMeet from [dbo].[Meeting] where place = @idPlace and dateMeet = @dateMeet";
+                    command.Parameters.AddWithValue("@idPlace", idPlace);
+                    command.Parameters.AddWithValue("@dateMeet", dateMeet);
+                    using(var reader = command.ExecuteReader()) {
+                        logger.Log(LogLevel.Info, $"End checking for existing meeting");
+                        return reader.HasRows;
+                    }
+                }
+            }
+        }
+
+        public int GetId(int idPlace, DateTime dateMeet) {
+            logger.Log(LogLevel.Info, $"Begin checking for existing meeting");
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using(SqlCommand command = connection.CreateCommand()) {
+                    command.CommandText = "select idMeet from [dbo].[Meeting] where place = @idPlace and dateMeet = @dateMeet";
+                    command.Parameters.AddWithValue("@idPlace", idPlace);
+                    command.Parameters.AddWithValue("@dateMeet", dateMeet);
+                    using(var reader = command.ExecuteReader()) {
+                        reader.Read();
+                        logger.Log(LogLevel.Info, $"End checking for existing meeting");
+                        return reader.GetInt32(reader.GetOrdinal("idMeet"));
+                    }
+                }
+            }
+        }
+
         public void Create(Meeting meeting) {
             logger.Log(LogLevel.Info, $"Start creating mmeting with id = {meeting.idMeet}");
             if(meeting == null) {
@@ -49,7 +82,7 @@ namespace ServerLogic.Sql
                 using(SqlCommand command = connection.CreateCommand()) {
                     command.CommandText = "insert into [dbo].[Meeting] (place, dateMeet) values (@place, @dateMeet)";
                     //command.Parameters.AddWithValue("@idMeet", meeting.idMeet);
-                    command.Parameters.AddWithValue("@place", meeting.idMeet);
+                    command.Parameters.AddWithValue("@place", meeting.place);
                     command.Parameters.AddWithValue("@dateMeet", meeting.dateMeet);
                     command.ExecuteNonQuery();
                     logger.Log(LogLevel.Info, $"End creating mmeting with id = {meeting.idMeet}");

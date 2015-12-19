@@ -10,12 +10,13 @@ namespace WPFClient.Repository {
     
 
     public class PlaceRepository {
-        public async Task<Place> GetUser(Place place) {
+
+        public async Task<int> GetId(Place place) {
             using(var client = new HttpClient {
                 BaseAddress = new Uri(@"http://localhost:57239/")
             }) {
-                var response = client.PostAsync($"api/place/add/country/{place.country}/city/{place.city}/street/{place.street}/house/{place.house}", null).Result;
-                return await response.Content.ReadAsAsync<Place>();
+                var response = client.GetAsync($"api/place/id/country/{place.country}/city/{place.city}/street/{place.street}/house/{place.house}/flat/{place.flat}").Result;
+                return await response.Content.ReadAsAsync<int>();
             }
         }
     }

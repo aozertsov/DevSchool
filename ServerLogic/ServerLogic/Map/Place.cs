@@ -10,6 +10,7 @@ namespace ServerLogic.Map {
         public string city                  { get; set; }
         public string street                { get; set; }
         public int house                    { get; set; }
+        public int flat                     { get; set; }
         public IEnumerable<Meeting> meeting { get; set; }
     }
 }

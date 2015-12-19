@@ -36,19 +36,19 @@
             <Label Grid.Row="3" HorizontalAlignment="Center">flat</Label>
             <TextBox Name="flat" Grid.Row="3" Text="{Binding Flat}" Width="200"></TextBox>
         </StackPanel>
-        <DatePicker Grid.Row="5"  HorizontalAlignment="Center" DisplayDateStart="{Binding CurrentDate}" FirstDayOfWeek="Monday" >
+        <DatePicker Name ="datepick"  Grid.Row="5"  HorizontalAlignment="Center" DisplayDateStart="{Binding CurrentDate}" FirstDayOfWeek="Monday" >
             <DatePicker.Resources>
                 <Style TargetType="DatePickerTextBox">
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <TextBox  Text="{Binding Path=SelectedDate, RelativeSource={RelativeSource AncestorType=DatePicker}, StringFormat={}{0:dd/MM/yyyy hh:mm:ss}}"/>
+                                <TextBox Name="time"  Text="{Binding Path=SelectedDate, RelativeSource={RelativeSource AncestorType=DatePicker}, StringFormat={}{0:dd/MM/yyyy hh:mm:ss}}"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
                 </Style>
             </DatePicker.Resources>
         </DatePicker>
-        <Button Grid.Row="6" Name ="Go" Content="Create Meet" HorizontalAlignment="Center" Command="{Binding Create}" ></Button>
+        <Button Grid.Row="6" Name ="Go" Content="Create Meet" HorizontalAlignment="Center" Command="{Binding CreateMeetClick}" ></Button>
     </Grid>
 </UserControl>

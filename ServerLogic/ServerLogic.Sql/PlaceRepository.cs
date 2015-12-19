@@ -26,11 +26,12 @@ namespace ServerLogic.Sql {
             using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
                 connection.Open();
                 using (var command = connection.CreateCommand()) {
-                    command.CommandText = "insert into [dbo].[Place] (country, city, street, house) values (@country, @city, @street, @house)";
+                    command.CommandText = "insert into [dbo].[Place] (country, city, street, house, flat) values (@country, @city, @street, @house, @flat)";
                     command.Parameters.AddWithValue("@country", place.country);
                     command.Parameters.AddWithValue("@city", place.city);
                     command.Parameters.AddWithValue("@street", place.street);
                     command.Parameters.AddWithValue("@house", place.house);
+                    command.Parameters.AddWithValue("@flat", place.flat);
                     command.ExecuteNonQuery();
                 }
             }
@@ -48,6 +49,27 @@ namespace ServerLogic.Sql {
                         reader.Read();
                         logger.Log(LogLevel.Info, $"End checking place with id = {idPlace}");
                         return reader.HasRows;
+                    }
+                }
+            }
+        }
+
+        public int GetId(Place place) {
+            logger.Log(LogLevel.Info, $"Start getting place id");
+            using(var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using(var command = connection.CreateCommand()) {
+                    command.CommandText = "select idPlace from [dbo].[Place] where country = @country and city = @city and street = @street and house = @house and flat = @flat";
+                    command.Parameters.AddWithValue("@country", place.country);
+                    command.Parameters.AddWithValue("@city", place.city);
+                    command.Parameters.AddWithValue("@street", place.street);
+                    command.Parameters.AddWithValue("@house", place.house);
+                    command.Parameters.AddWithValue("@flat", place.flat);
+
+                    using(var reader = command.ExecuteReader()) {
+                        reader.Read();
+                        logger.Log(LogLevel.Info, $"End getting place id");
+                        return reader.HasRows ? reader.GetInt32(0) : 0;
                     }
                 }
             }

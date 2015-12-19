@@ -14,7 +14,7 @@ namespace WPFClient {
     using WPFClient.UserControls;
 
     public class Binding : INotifyPropertyChanged {
-        public DateTime CurrentDate = new DateTime();
+        public DateTime? CurrentDate;
         private UserControl _control;
         private UserControl _logOrCreate;
         private Guid _userGuid;
@@ -26,6 +26,36 @@ namespace WPFClient {
         private Visibility _flag = Visibility.Visible;
         private Visibility _flagSettings = Visibility.Hidden;
         private List<Place> _meetings = new List<Place>();
+        private int _flat;
+        private int _house;
+        private string _street;
+        private string _city;
+        private string _country;
+
+        public int Flat {
+            get { return _flat; }
+            set { _flat = value; }
+        }
+
+        public int House {
+            get { return _house; }
+            set { _house = value; }
+        }
+
+        public string Street {
+            get { return _street; }
+            set { _street = value; }
+        }
+
+        public string City {
+            get { return _city; }
+            set { _city = value; }
+        }
+
+        public string Country {
+            get { return _country; }
+            set { _country = value; }
+        }
 
         public Guid UserGuid {
             get { return _userGuid; }
@@ -182,7 +212,7 @@ namespace WPFClient {
                 });
             }
         }
-
+        
         public ICommand ClickLogin
         {
             get
@@ -249,7 +279,43 @@ namespace WPFClient {
                 });
             }
         }
-        
+
+        public ICommand CreateMeetClick
+        {
+            get
+            {
+                return new DelegateCommand(() => {
+                    var c = Control as CreateMeetControl;
+                    CurrentDate = c?.datepick.SelectedDate;
+                    DateTime t = CurrentDate.Value;
+                    if(!String.IsNullOrEmpty(_country) && !String.IsNullOrEmpty(_city) && !String.IsNullOrEmpty(_street) && _house >= 0 && _flat >= 0 && t >= (new DateTime())) {
+                        var place = new Place {
+                            city = _city,
+                            country = _country,
+                            street = _street,
+                            house = _house,
+                            flat = _flat
+                        };
+
+                        var placeId = new PlaceRepository().GetId(place);
+                        placeId.Wait();
+                        var idplace = placeId.Result;
+
+                        var state = new MeetRepository().CreateMeet(place, t, UserGuid, idplace);
+                        state.Wait();
+                        var idMeet = state.Result;
+
+                        var subscribeme = new SubscriptionRepository().Subscribe(_userGuid, idMeet);
+                        subscribeme.Wait();
+                        var result = subscribeme.Result;
+                        Hello = $"Hello {Email}";
+                        Flag = Visibility.Hidden;
+                        OnPropertyChanged();
+                    }
+                });
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
             
         [NotifyPropertyChangedInvocator]

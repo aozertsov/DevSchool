@@ -85,6 +85,7 @@
     </ApplicationDefinition>
     <Compile Include="Repository\MeetRepository.cs" />
     <Compile Include="Repository\PlaceRepository.cs" />
+    <Compile Include="Repository\SubscriptionRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="UserControls\CreateControl.xaml.cs">
       <DependentUpon>CreateControl.xaml</DependentUpon>

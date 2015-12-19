@@ -21,5 +21,13 @@ namespace ServerLogic.API.Controllers
             var w = mr.Get(idUser);
             return w;
         }
+
+        [HttpPost]
+        [Route("api/meeting/create/{idPlace}")]
+        public int CreateMeet(int idPlace, [FromBody] DateTime dateMeet) {
+            if (!mr.Exist(idPlace, dateMeet))
+                mr.Create(new Meeting {dateMeet =  dateMeet, place = idPlace});
+            return mr.GetId(idPlace, dateMeet);
+        }
     }
 }
