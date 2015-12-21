@@ -36,7 +36,7 @@ namespace ServerLogic.Tests {
         
         [TestMethod]
         [ClassCleanup]
-        public void DeleteUser() {
+        public static void DeleteData() {
             var userRepository = new UserRepository();
             var user = DataGenerator.GenerateUser();
             userRepository.Delete(user);

@@ -142,5 +142,35 @@ namespace ServerLogic.Sql
                 }
             }
         }
+
+        public List<Place> Invitations(string email) {
+            logger.Log(LogLevel.Info, $"Get meetings for user with email = {email}");
+            using(
+                SqlConnection connection =
+                    new SqlConnection(ConfigurationManager.ConnectionStrings["DevSchoolDB"].ConnectionString)) {
+                connection.Open();
+                using(SqlCommand command = connection.CreateCommand()) {
+                    command.CommandText =
+                        "select Place.city, Place.country, Place.street, Place.flat, Place.house from Sandbox join Meeting on Meeting.idMeet = Sandbox.meeting join Place on PLace.idPlace = Meeting.place where Sandbox.invated = @invated";
+                    command.Parameters.AddWithValue("@invated", email);
+                    var reader = command.ExecuteReader();
+                    reader.Read();
+                    if(reader.HasRows) {
+                        List<Place> result = new List<Place>();
+                        do {
+                            result.Add(new Place {
+                                country = reader.GetString(reader.GetOrdinal("country")),
+                                city = reader.GetString(reader.GetOrdinal("city")),
+                                street = reader.GetString(reader.GetOrdinal("street")),
+                                house = reader.GetInt32(reader.GetOrdinal("house")),
+                                flat = reader.GetInt32(reader.GetOrdinal("flat")),
+                            });
+                        } while(reader.NextResult());
+                        return result;
+                    }
+                    return null;
+                }
+            }
+        }
     }
 }

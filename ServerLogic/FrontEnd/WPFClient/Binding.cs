@@ -11,12 +11,13 @@ namespace WPFClient {
     using System.Windows.Controls;
     using Repository;
     using ServerLogic.Map;
-    using WPFClient.UserControls;
+    using UserControls;
 
     public class Binding : INotifyPropertyChanged {
         public DateTime? CurrentDate;
         private UserControl _control;
         private UserControl _logOrCreate;
+        private List<Place> invites;
         private Guid _userGuid;
         private string _email;
         private string _firstName;
@@ -212,7 +213,24 @@ namespace WPFClient {
                 });
             }
         }
-        
+
+        public ICommand GetInvites
+        {
+            get
+            {
+                return new DelegateCommand(() => {
+                    if(_userGuid != Guid.Empty) {
+                        Control = new InvitationControl();
+                        var getinvites = new PlaceRepository().GetInvites(_email);
+                        getinvites.Wait();
+                        invites = getinvites.Result;
+                        Control.Content = invites[0];
+                        FlagSetting = Visibility.Visible;
+                    }
+                });
+            }
+        }
+
         public ICommand ClickLogin
         {
             get

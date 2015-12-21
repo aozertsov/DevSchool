@@ -19,5 +19,15 @@ namespace WPFClient.Repository {
                 return await response.Content.ReadAsAsync<int>();
             }
         }
+
+        public async Task<List<Place>> GetInvites(string email) {
+            using(var client = new HttpClient {
+                BaseAddress = new Uri(@"http://localhost:57239/")
+            }) {
+                var response = client.PostAsJsonAsync("api/meeting/invites", email).Result;
+                return await response.Content.ReadAsAsync<List<Place>>();
+            }
+        }
+
     }
 }

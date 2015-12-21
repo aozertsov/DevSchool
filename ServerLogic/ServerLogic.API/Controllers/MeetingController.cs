@@ -29,5 +29,11 @@ namespace ServerLogic.API.Controllers
                 mr.Create(new Meeting {dateMeet =  dateMeet, place = idPlace});
             return mr.GetId(idPlace, dateMeet);
         }
+
+        [HttpPost]
+        [Route("api/meeting/invites")]
+        public List<Place> GetInvites([FromBody] string email) {
+            return mr.Invitations(email);
+        }
     }
 }
